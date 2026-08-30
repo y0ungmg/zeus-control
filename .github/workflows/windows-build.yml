@@ -1,0 +1,45 @@
+name: Windows build and smoke test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore ZeusControl.csproj
+
+      - name: Build
+        run: dotnet build ZeusControl.csproj -c Release --no-restore
+
+      - name: Publish self-contained Windows x64
+        run: dotnet publish ZeusControl.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -o publish
+
+      - name: Application self-test
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath "./publish/ZEUS_CONTROL.exe" -ArgumentList "--self-test" -Wait -PassThru -NoNewWindow
+          if ($process.ExitCode -ne 0) { throw "Self-test failed with exit code $($process.ExitCode)" }
+
+      - name: Package
+        shell: pwsh
+        run: Compress-Archive -Path ./publish/ZEUS_CONTROL.exe,./README.md -DestinationPath ./ZEUS_CONTROL_Windows10_x64.zip -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZEUS_CONTROL_Windows10_x64
+          path: |
+            ./publish/ZEUS_CONTROL.exe
+            ./ZEUS_CONTROL_Windows10_x64.zip
+          if-no-files-found: error
+          retention-days: 30
