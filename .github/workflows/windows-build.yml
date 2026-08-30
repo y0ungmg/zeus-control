@@ -37,7 +37,10 @@ jobs:
             $process.Kill()
             throw "Self-test exceeded the 30 second startup limit"
           }
-          if ($process.ExitCode -ne 0) { throw "Self-test failed with exit code $($process.ExitCode)" }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path "./publish/self-test-error.log") { Get-Content "./publish/self-test-error.log" }
+            throw "Self-test failed with exit code $($process.ExitCode)"
+          }
 
       - name: Package
         shell: pwsh
