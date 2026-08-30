@@ -82,7 +82,12 @@ internal sealed class HeadsetVisual : Control
     public Color RgbColor { get; set; } = Theme.Purple;
     public bool MicMuted { get; set; }
     public int Volume { get; set; } = 50;
-    public HeadsetVisual() { DoubleBuffered = true; BackColor = Color.Transparent; }
+    public HeadsetVisual()
+    {
+        SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+        DoubleBuffered = true;
+        BackColor = Color.Transparent;
+    }
     protected override void OnPaint(PaintEventArgs e)
     {
         var g = e.Graphics; g.SmoothingMode = SmoothingMode.AntiAlias; float s = Math.Min(Width / 450f, Height / 360f); g.TranslateTransform((Width - 450 * s) / 2, (Height - 360 * s) / 2); g.ScaleTransform(s, s);
@@ -107,7 +112,13 @@ internal sealed class EqualizerControl : Control
 {
     private readonly int[] values = new int[10]; private int active = -1;
     public int[] Values { get => [.. values]; set { for (int i = 0; i < Math.Min(10, value.Length); i++) values[i] = Math.Clamp(value[i], -12, 12); Invalidate(); } }
-    public EqualizerControl() { DoubleBuffered = true; BackColor = Color.Transparent; Cursor = Cursors.Hand; }
+    public EqualizerControl()
+    {
+        SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+        DoubleBuffered = true;
+        BackColor = Color.Transparent;
+        Cursor = Cursors.Hand;
+    }
     protected override void OnPaint(PaintEventArgs e)
     {
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias; string[] f = ["31", "62", "125", "250", "500", "1k", "2k", "4k", "8k", "16k"];
