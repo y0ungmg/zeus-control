@@ -7,13 +7,14 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        var isSelfTest = args.Contains("--self-test", StringComparer.OrdinalIgnoreCase);
         try
         {
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (args.Contains("--self-test", StringComparer.OrdinalIgnoreCase))
+            if (isSelfTest)
             {
                 using var form = new MainForm(selfTest: true);
                 form.CreateControl();
@@ -30,6 +31,11 @@ internal static class Program
         }
         catch (Exception ex)
         {
+            if (isSelfTest)
+            {
+                Console.Error.WriteLine(ex);
+                return 1;
+            }
             MessageBox.Show($"Program nie mógł się uruchomić.\n\n{ex}", "ZEUS CONTROL — błąd startu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return 1;
         }
