@@ -90,8 +90,10 @@ internal sealed class HeadsetVisual : Control
         using (var band = new Pen(Color.FromArgb(83, 91, 111), 28) { StartCap = LineCap.Round, EndCap = LineCap.Round }) g.DrawArc(band, 95, 42, 260, 260, 188, 164);
         using (var band2 = new Pen(Color.FromArgb(225, 229, 240), 7) { StartCap = LineCap.Round, EndCap = LineCap.Round }) g.DrawArc(band2, 102, 50, 246, 246, 188, 164);
         DrawCup(g, 48, 168, "R"); DrawCup(g, 310, 168, "L");
-        using var mic = new Pen(Color.FromArgb(124, 132, 153), 7) { StartCap = LineCap.Round, EndCap = LineCap.Round }; g.DrawLines(mic, [new Point(78, 286), new Point(33, 326), new Point(86, 326)]);
-        using var led = new SolidBrush(MicMuted ? Theme.Red : Theme.Green); g.FillEllipse(78, 318, 17, 17);
+        using var mic = new Pen(Color.FromArgb(124, 132, 153), 7) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+        g.DrawLines(mic, new Point[] { new(78, 286), new(33, 326), new(86, 326) });
+        using var led = new SolidBrush(MicMuted ? Theme.Red : Theme.Green);
+        g.FillEllipse(led, 78, 318, 17, 17);
     }
     private void DrawCup(Graphics g, int x, int y, string side)
     {
