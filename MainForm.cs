@@ -45,7 +45,8 @@ internal sealed class MainForm : Form
             outputSlider.Value = 63; if (outputSlider.Value != 63) throw new InvalidOperationException("Suwak głośności nie zachował wartości.");
             micSlider.Value = 81; if (micSlider.Value != 81) throw new InvalidOperationException("Suwak mikrofonu nie zachował wartości.");
             equalizer.Values = [-2, -1, 0, 1, 2, 3, 4, 3, 1, -1]; if (equalizer.Values[6] != 4) throw new InvalidOperationException("Korektor nie zachował profilu.");
-            using var bitmap = new Bitmap(1180, 760); DrawToBitmap(bitmap, new Rectangle(0, 0, 1180, 760));
+            PerformLayout();
+            if (!IsHandleCreated) CreateControl();
             failure = ""; return true;
         }
         catch (Exception ex) { failure = ex.ToString(); return false; }
