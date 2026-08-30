@@ -28,7 +28,11 @@ jobs:
       - name: Application self-test
         shell: pwsh
         run: |
-          $process = Start-Process -FilePath "./publish/ZEUS_CONTROL.exe" -ArgumentList "--self-test" -Wait -PassThru -NoNewWindow
+          $process = Start-Process -FilePath "./publish/ZEUS_CONTROL.exe" -ArgumentList "--self-test" -PassThru
+          if (-not $process.WaitForExit(30000)) {
+            $process.Kill()
+            throw "Self-test exceeded the 30 second startup limit"
+          }
           if ($process.ExitCode -ne 0) { throw "Self-test failed with exit code $($process.ExitCode)" }
 
       - name: Package
