@@ -20,6 +20,7 @@ internal static class Program
                 form.CreateControl();
                 if (!form.RunSelfTest(out var failure))
                 {
+                    File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "self-test-error.log"), failure);
                     Console.Error.WriteLine(failure);
                     return 2;
                 }
@@ -33,6 +34,7 @@ internal static class Program
         {
             if (isSelfTest)
             {
+                File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "self-test-error.log"), ex.ToString());
                 Console.Error.WriteLine(ex);
                 return 1;
             }
